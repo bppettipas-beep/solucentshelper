@@ -22,8 +22,23 @@ for (const cmd of commands) client.commands.set(cmd.data.name, cmd);
 
 // ─── Events ───────────────────────────────────────────────────────────────────
 
-client.once('clientReady', c => {
+client.once('clientReady', async c => {
   console.log(`[Ready] Logged in as ${c.user.tag}`);
+
+  const seen = new Set();
+  const commandData = commands
+    .filter(command => seen.has(command.data.name) ? false : seen.add(command.data.name))
+    .map(command => command.data.toJSON());
+
+  for (const guild of c.guilds.cache.values()) {
+    try {
+      await guild.commands.set(commandData);
+      console.log(`[Commands] Registered ${commandData.length} command(s) in ${guild.name} (${guild.id}).`);
+    } catch (err) {
+      console.error(`[Commands] Failed to register commands in ${guild.name} (${guild.id}):`, err);
+    }
+  }
+
   reschedule(client);
 });
 

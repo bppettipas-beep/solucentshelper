@@ -2,7 +2,7 @@
 builder = "nixpacks"
 
 [deploy]
-startCommand = "node deploy.js && node --experimental-sqlite index.js"
+startCommand = "node --experimental-sqlite index.js"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 10
 
